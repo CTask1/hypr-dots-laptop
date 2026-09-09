@@ -26,13 +26,17 @@ end
 local dsp = hl.dsp
 local cmd = dsp.exec_cmd
 local window = dsp.window
+local asink = "@DEFAULT_AUDIO_SINK@"
+local asource = "@DEFAULT_AUDIO_SOURCE@"
 
 binds ({
     {"SHIFT + Q", window.close()},
     {"E", cmd(vars.fileManager)},
     {"T", cmd(vars.textedit)},
     {"SHIFT + T", cmd(vars.textedith)},
-    {"CTRL + T", cmd(vars.texteditn)},
+    {"N", cmd(vars.texteditn)},
+    {"P", cmd(vars.texteditp)},
+    {"C", cmd(vars.texteditc)},
     {"F", window.fullscreen({ mode = "maximized", action = "toggle" })},
     {"Return", cmd(vars.terminal)},
     {"V", window.float({ action = "toggle" })},
@@ -73,7 +77,7 @@ binds ({
     {"SHIFT + 8", window.move({ workspace = 8 })},
     {"SHIFT + 9", window.move({ workspace = 9 })},
     {"SHIFT + 0", window.move({ workspace = 10 })},
-    -- Example special workspace (scratchpad)
+    -- Special workspaces
     {"S", dsp.workspace.toggle_special("term")},
     {"SHIFT + S", window.move({ workspace = "special:term" })},
     {"X", dsp.workspace.toggle_special("work1")},
@@ -94,10 +98,10 @@ binds ({
 })
 
 -- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ && notify-send \"Volume increased\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@)\""), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && notify-send \"Volume decreased\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@)\""), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && notify-send \"Audio State Changed\" \"$(wpctl get-volume @DEFAULT_AUDIO_SINK@)\""), { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute", cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && notify-send \"Mic State Changed\" \"$(wpctl get-volume @DEFAULT_AUDIO_SOURCE@)\""), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", cmd("wpctl set-volume -l 1 " .. asink .. " 5%+ && notify-send \"Volume increased\" \"$(wpctl get-volume " .. asink .. ")\""), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", cmd("wpctl set-volume " .. asink .. " 5%- && notify-send \"Volume decreased\" \"$(wpctl get-volume " .. asink .. ")\""), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", cmd("wpctl set-mute " .. asink .. " toggle && notify-send \"Audio State Changed\" \"$(wpctl get-volume " .. asink .. ")\""), { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute", cmd("wpctl set-mute " .. asource .. " toggle && notify-send \"Mic State Changed\" \"$(wpctl get-volume " .. asource .. ")\""), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessUp", cmd("brightnessctl -e4 -n2 set 5%+ && notify-send \"Brightness increased\" \"Brightness: $(($(brightnessctl g) * 100 / $(brightnessctl m)))%\""), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", cmd("brightnessctl -e4 -n2 set 5%- && notify-send \"Brightness decreased\" \"Brightness: $(($(brightnessctl g) * 100 / $(brightnessctl m)))%\""), { locked = true, repeating = true })
 

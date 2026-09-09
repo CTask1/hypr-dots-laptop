@@ -9,12 +9,14 @@ local gaps_out = 3
 local bordera = { colors = { "rgba(335599ff)", "rgba(0055aaee)" }, angle = 270 }
 local borderi = "rgba(19395bcc)"
 local border_size = 2
-local opacitya = .98
+local border_rounding = 20
+local border_rounding_power = 2
+local opacitya = .96
 local opacityi = .9
-local blur_size = 3
-local blur_passes = 1
+local blur_size = 8
+local blur_passes = 2
 local shadow_range = 5
-local shadow_render_power = 1
+local shadow_render_power = 2
 local shadow_color = "rgba(333366bb)"
 
 -- https://wiki.hypr.land/Configuring/Variables/#general
@@ -152,8 +154,8 @@ hl.config({
     },
     -- https://wiki.hypr.land/Configuring/Variables/#decoration
     decoration = {
-        rounding = 10,
-        rounding_power = 2,
+        rounding = border_rounding,
+        rounding_power = border_rounding_power,
         -- Change transparency of focused and unfocused windows
         active_opacity = opacitya,
         inactive_opacity = opacityi,
