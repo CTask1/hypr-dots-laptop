@@ -18,8 +18,11 @@ local vars = {
 }
 
 local function binds(kb)
-    for _, pair in ipairs(kb) do
-        hl.bind(mainMod .. " + " .. pair[1], pair[2])
+    for _, group in ipairs(kb) do
+        if group[3] == nil then
+            group[3] = true
+        end
+        hl.bind((group[3] and (mainMod .. " + ") or "") .. group[1], group[2], group[4])
     end
 end
 
@@ -40,6 +43,7 @@ binds ({
     {"P", cmd(vars.texteditp)},
     {"C", cmd(vars.texteditc)},
     {"F", window.fullscreen({ mode = "maximized", action = "toggle" })},
+    {"SHIFT + F", window.fullscreen({ action = "toggle"})},
     {"Return", cmd(vars.terminal)},
     {"V", window.float({ action = "toggle" })},
     {"B", cmd(vars.browser)},
@@ -97,16 +101,13 @@ binds ({
     -- Screenshots
     {"Print", cmd("grim ~/Pictures/$(date +'%Y-%m-%d-%H%M%S_screenshot.png') && notify-send \"Screenshot taken\" \"Saved to Pictures\"")},
     {"SHIFT + Print", cmd("grim -g \"$(slurp)\" ~/Pictures/$(date +'%Y-%m-%d-%H%M%S_screenshot.png') && notify-send \"Screenshot taken\" \"Saved to Pictures\"")},
+    {"Print", cmd("grim - | wl-copy && notify-send \"Screenshot taken\" \"Copied to clipboard\""), false},
+    {"SHIFT + Print", cmd("grim -g \"$(slurp)\" - | wl-copy && notify-send \"Screenshot taken\" \"Copied to clipboard\""), false},
+    -- Laptop multimedia keys for volume and LCD brightness
+    {"XF86AudioRaiseVolume", cmd("wpctl set-volume -l 1 " .. asink .. " 5%+ && notify-send \"Volume increased\" \"$(wpctl get-volume " .. asink .. ")\""), false, { locked = true, repeating = true }},
+    {"XF86AudioLowerVolume", cmd("wpctl set-volume " .. asink .. " 5%- && notify-send \"Volume decreased\" \"$(wpctl get-volume " .. asink .. ")\""), false, { locked = true, repeating = true }},
+    {"XF86AudioMute", cmd("wpctl set-mute " .. asink .. " toggle && notify-send \"Audio State Changed\" \"$(wpctl get-volume " .. asink .. ")\""), false, { locked = true, repeating = true }},
+    {"XF86AudioMicMute", cmd("wpctl set-mute " .. asource .. " toggle && notify-send \"Mic State Changed\" \"$(wpctl get-volume " .. asource .. ")\""), false, { locked = true, repeating = true }},
+    {"XF86MonBrightnessUp", cmd("brightnessctl -e4 -n2 set 5%+ && notify-send \"Brightness increased\" \"Brightness: $(($(brightnessctl g) * 100 / $(brightnessctl m)))%\""), false, { locked = true, repeating = true }},
+    {"XF86MonBrightnessDown", cmd("brightnessctl -e4 -n2 set 5%- && notify-send \"Brightness decreased\" \"Brightness: $(($(brightnessctl g) * 100 / $(brightnessctl m)))%\""), false, { locked = true, repeating = true }},
 })
-
--- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", cmd("wpctl set-volume -l 1 " .. asink .. " 5%+ && notify-send \"Volume increased\" \"$(wpctl get-volume " .. asink .. ")\""), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", cmd("wpctl set-volume " .. asink .. " 5%- && notify-send \"Volume decreased\" \"$(wpctl get-volume " .. asink .. ")\""), { locked = true, repeating = true })
-hl.bind("XF86AudioMute", cmd("wpctl set-mute " .. asink .. " toggle && notify-send \"Audio State Changed\" \"$(wpctl get-volume " .. asink .. ")\""), { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute", cmd("wpctl set-mute " .. asource .. " toggle && notify-send \"Mic State Changed\" \"$(wpctl get-volume " .. asource .. ")\""), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp", cmd("brightnessctl -e4 -n2 set 5%+ && notify-send \"Brightness increased\" \"Brightness: $(($(brightnessctl g) * 100 / $(brightnessctl m)))%\""), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", cmd("brightnessctl -e4 -n2 set 5%- && notify-send \"Brightness decreased\" \"Brightness: $(($(brightnessctl g) * 100 / $(brightnessctl m)))%\""), { locked = true, repeating = true })
-
--- Screenshots
-hl.bind("Print", cmd("grim - | wl-copy && notify-send \"Screenshot taken\" \"Copied to clipboard\""))
-hl.bind("SHIFT + Print", cmd("grim -g \"$(slurp)\" - | wl-copy && notify-send \"Screenshot taken\" \"Copied to clipboard\""))
